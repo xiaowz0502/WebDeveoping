@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                border-style: solid;
+            }
+
+
+        </style>
+    </head>
+
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+                <a href="/explore/"><b>Explore</b></a>|<a href="/users/{{contextcc.logname}}/"><b>{{contextcc.logname}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+
+        <div class="flex-container">
+            <div>
+                <img alt="post1pic" src="{{url_for('download_file', filename = contextcc.filename)}}"
+                            width="900" height="750">
+            </div>
+
+            <div>
+                <p>
+                    &nbsp;&nbsp;
+
+                    <a href="/users/{{contextcc.owner}}/">
+                        <img alt="post1pic" src="{{url_for('download_file', filename = contextcc.owner_image)}}"
+                        width="30" height="30">
+                    </a>
+
+                    &nbsp;&nbsp;
+
+                    <a href="/users/{{contextcc.owner}}/">{{contextcc.owner}}</a>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                    <a href="/posts/{{contextcc.postid}}/">{{contextcc.created}}</a>
+                    
+                </p>
+
+                <p>
+                    &nbsp;&nbsp;   
+                    {%if contextcc.likes is eq(1) %}
+                        {{contextcc.likes }}
+                        like
+                    {%else%}
+                        {{contextcc.likes }}
+                        likes
+                    {% endif %}
+                </p>
+
+                {% for comment in contextcc.comments %}
+                    <p>
+                        &nbsp;&nbsp;
+                        <a href="/users/{{comment.owner}}/"><b>{{comment.owner}}</b></a>
+                        {{comment.text}}
+                    </p>
+
+                    {%if comment.own_comment %}
+                        <form action="{{url_for('comments')}}?target=/posts/{{contextcc.postid}}/" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="operation" value="delete"/>
+                            <input type="hidden" name="commentid" value="{{comment.commentid}}"/>
+                            <input type="submit" name="uncomment" value="delete"/>
+                        </form>
+                    {% endif %}
+                    
+                {% endfor %}
+
+                {%if contextcc.likebool %}
+                    <form action= "{{url_for('likes')}}?target=/posts/{{contextcc.postid}}/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="unlike"/>
+                        <input type="hidden" name="postid" value="{{contextcc.postid}}"/>
+                        <input type="submit" name="unlike" value="unlike"/>
+                    </form>
+                {%else%}
+                    <form action="{{url_for('likes')}}?target=/posts/{{contextcc.postid}}/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="like"/>
+                        <input type="hidden" name="postid" value="{{contextcc.postid}}"/>
+                        <input type="submit" name="like" value="like"/>
+                    </form>
+                {%endif%}
+
+                <form action="{{url_for('comments')}}?target=/posts/{{contextcc.postid}}/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="operation" value="create"/>
+                    <input type="hidden" name="postid" value="{{contextcc.postid}}"/>
+                    <input type="text" name="text" required/>
+                    <input type="submit" name="comment" value="comment"/>
+                </form>
+
+                {%if contextcc.post_del %}
+                    <form action="{{url_for('posts')}}?target=/users/{{contextcc.logname}}/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="delete"/>
+                        <input type="hidden" name="postid" value="{{contextcc.postid}}"/>
+                        <input type="submit" name="delete" value="delete this post"/>
+                    </form>
+                {%endif%}
+
+
+            </div>
+
+        </div>
+
+
+        
+        </body>
+</html>

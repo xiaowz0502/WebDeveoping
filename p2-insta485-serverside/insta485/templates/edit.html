@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                border-style: solid;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a >
+                </p >
+            </div>
+            
+            <a href="/explore/"><b>Explore</b></a>|<a href="/users/{{contextcc.logname}}/"><b>{{contextcc.logname}}</b></a>
+            
+        </div>
+        <hr>
+        <br>
+        <br>
+        <a href="/users/{{contextcc.logname}}/">
+            <img alt="post1pic" src="{{url_for('download_file', filename = contextcc.image)}}" width="30" height="30">
+        </a >
+        &nbsp;&nbsp;
+        <a href="/users/{{contextcc.logname}}/">{{contextcc.logname}}</a >
+        <form action="{{url_for('accounts')}}?target={{url_for('edit')}}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*"/><br>
+            <input type="text" name="fullname" value="{{contextcc.fullname}}" required/><br>
+            <input type="text" name="email" value="{{contextcc.email}}" required/><br>
+            <input type="submit" name="update" value="submit"/>
+            <input type="hidden" name="operation" value="edit_account"/>
+        </form>
+        <a href="/accounts/password/">Change Password</a >
+        <a href="/accounts/delete/">Delete Account</a >
+</html>

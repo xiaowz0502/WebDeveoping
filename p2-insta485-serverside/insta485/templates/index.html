@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .post1{
+                border-style: solid;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+            <a href="{{url_for('explore')}}"><b>Explore</b></a>|<a href="{{url_for('users', user_url_slug = lognamecc)}}"><b>{{lognamecc}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+
+        <div class="flex-container">
+            {% for var in postscc %}
+                <div class = "post1">
+                    <p>
+                        &nbsp;&nbsp;
+
+                        <a href="{{url_for('users', user_url_slug = var.owner)}}">
+                            <img alt="post1pic" src="{{url_for('download_file', filename = var.owner_img_url)}}"
+                            width="30" height="30">
+                        </a>
+
+                        &nbsp;&nbsp;
+
+                        <a href="{{url_for('users', user_url_slug = var.owner)}}">{{var.owner}}</a>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <a href="{{url_for('post_redirect', postid_url_slug = var['postid'])}}">{{var.timestamp}}</a>
+                        
+                    </p>
+
+                    &nbsp;&nbsp;
+                    <img src="{{url_for('download_file', filename = var.img_url)}}" alt = "1" width = "600"  height="499">
+
+                    <p >
+                        &nbsp;&nbsp;   
+                        {%if var.likes is eq(1)%}
+                            {{var['likes']}}
+                            like
+                        {%else%}
+                            {{var['likes']}}
+                            likes
+                        {% endif %}
+                    </p>
+
+                    
+                    {% for comment in var['comments'] %}
+                        <p >
+                            &nbsp;&nbsp;
+                            <a href="{{url_for('users', user_url_slug =  comment.owner)}}"><b>{{comment.owner}}</b></a>
+                            {{comment.text}}
+                        </p>
+                    {% endfor %}
+
+                    <br>
+
+                    {%if var.likebool %}
+                        <form action= "{{url_for('likes')}}?target={{url_for('show_index')}}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="unlike"/>
+                        <input type="hidden" name="postid" value="{{var.postid}}"/>
+                        <input type="submit" name="unlike" value="unlike"/>
+                        </form>
+                    {%else%}
+                        <form action="{{url_for('likes')}}?target={{url_for('show_index')}}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="like"/>
+                        <input type="hidden" name="postid" value="{{var.postid}}"/>
+                        <input type="submit" name="like" value="like"/>
+                        </form>
+                    {%endif%}
+
+                    <form action="{{url_for('comments')}}?target={{url_for('show_index')}}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="create"/>
+                        <input type="hidden" name="postid" value="{{var.postid}}"/>
+                        <input type="text" name="text" required/>
+                        <input type="submit" name="comment" value="comment"/>
+                    </form>
+                </div>
+                <br>
+
+                <br>
+                <br>
+            {% endfor %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .post{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                border-style: solid;
+            }
+
+
+        </style>
+    </head>
+
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+                <a href="/explore/"><b>Explore</b></a>|<a href="{{url_for('users', user_url_slug = contextcc.logname)}}"><b>{{contextcc.logname}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+
+        <h1>
+            Discover People
+        </h1>
+
+        <div class="flex-container">
+            {% for follower in contextcc.not_following %}
+                <div class = "post">
+                    
+                    <p>
+                        <img alt="post1pic" src="{{url_for('download_file', filename = follower.filename)}}"
+                        width="30" height="30">
+                        <a href="/users/{{follower.username}}/">{{follower.username}}</a>
+                    </p>
+                    
+                    <form action="{{url_for('following_redirect')}}?target={{url_for('following', user_url_slug = follower.username)}}" method="post" enctype="multipart/form-data">
+                        <input type="submit" name="follow" value="follow"/>
+                        <input type="hidden" name="username" value="follower.username"/>
+                        <input type="hidden" name="operation" value="follow"/>
+                    </form>
+
+                </div>
+                <br>
+                <br>
+                <br>
+            {% endfor %}
+        </div>
+        
+        </body>
+</html>

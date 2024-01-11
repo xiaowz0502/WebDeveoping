@@ -1,0 +1,82 @@
+#!/bin/bash
+# insta485db
+# Stop on errors
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+# Sanity check command line options
+usage() {
+echo "Usage: $0 (start|stop|status|restart)"
+}
+if [ $# -ne 1 ]; then
+usage
+exit 1
+fi
+# Parse argument.  $1 is the first argument
+case $1 in
+"start")
+    # ./bin/index status
+    # status = $?
+
+    # if [$status == 1]; then
+    #     echo "Error: index server is not running"
+    #     echo "Try ./bin/index start"
+    #     exit 1
+    # else
+    #     exit 0
+    # fi
+
+    set +o pipefail
+    NPROCS=$(pgrep -f "flask --app index run --host 0.0.0.0 --port 900[0-2]" | wc -l)
+    set -o pipefail 
+    if [ "$NPROCS" -eq 0 ]; then
+        echo "Error: index server is not running"
+        echo "Try ./bin/index start"
+        exit 1
+    fi
+
+
+    if pgrep -f "flask --app search run --host 0.0.0.0 --port 8000"; then
+        echo "Error: search server is already running"
+        exit 1
+    fi
+
+    directory_path=var
+    file_name=search.sqlite3
+    file_count=$(find $directory_path -name $file_name | wc -l)
+    if [[ $file_count -eq 0 ]]; then
+        echo "Error: can't find search database var/search.sqlite3"
+        echo "Try: ./bin/searchdb create"
+        exit 1
+    fi
+
+    echo "starting search server ..."
+    mkdir -p var/log
+    rm -f var/log/search.log
+    flask --app search run --host 0.0.0.0 --port 8000 &> var/log/search.log &
+    ;;
+"stop")
+    echo "stopping search server ..."
+    pkill -f 'flask --app search run --host 0.0.0.0 --port 8000' || true
+    ;;
+"status")
+    if pgrep -f "flask --app search run --host 0.0.0.0 --port 8000"; then
+        echo "search server running"
+        exit 0
+    else
+        echo "search server stopped"
+        exit 1
+    fi
+    ;;
+"restart")
+    echo "stopping search server ..."
+    pkill -f 'flask --app search run --host 0.0.0.0 --port 8000' || true
+    echo "starting search server ..."
+    mkdir -p var/log
+    rm -f var/log/search.log
+    flask --app search run --host 0.0.0.0 --port 8000 &> var/log/search.log &
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac

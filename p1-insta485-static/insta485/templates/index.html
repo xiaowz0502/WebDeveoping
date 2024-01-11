@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .post1{
+                border-style: solid;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+            <a href="/explore/"><b>Explore</b></a>|<a href="/users/{{logname}}/"><b>{{logname}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+
+        <div class="flex-container">
+            {% for var in posts %}
+                <div class = "post1">
+                    <p>
+                        &nbsp;&nbsp;
+
+                        <a href="/users/{{var['owner']}}/">
+                            <img alt="post1pic" src="{{var['owner_img_url']}}"
+                            width="30" height="30">
+                        </a>
+
+                        &nbsp;&nbsp;
+
+                        <a href="/users/{{var['owner']}}/">{{var['owner']}}</a>
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <a href="/posts/{{var['postid']}}/">{{var['timestamp']}}</a>
+                        
+                    </p>
+
+                    &nbsp;&nbsp;
+                    <img src="{{var['img_url']}}" alt = "1" width = "600"  height="499">
+
+                    <p >
+                        &nbsp;&nbsp;   
+                        {%if var.likes is eq(1)%}
+                            {{var['likes']}}
+                            like
+                        {%else%}
+                            {{var['likes']}}
+                            likes
+                        {% endif %}
+                    </p>
+
+                    
+                    {% for comment in var['comments'] %}
+                        <p >
+                            &nbsp;&nbsp;
+                            <a href="/users/{{comment.owner}}/"><b>{{comment.owner}}</b></a>
+                            {{comment.text}}
+                        </p>
+                    {% endfor %}
+
+                    <br>
+                </div>
+                <br>
+                <br>
+                <br>
+            {% endfor %}
+        </div>
+    </body>
+</html>

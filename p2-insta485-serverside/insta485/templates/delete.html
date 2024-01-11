@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                border-style: solid;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+        
+            <a href="/explore/"><b>Explore</b></a>|<a href="/users/{{logname}}/"><b>{{logname}}</b></a>
+        
+        </div>
+        <hr>
+        <br>
+        <br>
+        <p>{{logname}}</p>
+        <form action="{{url_for('accounts')}}?target={{url_for('create')}}" method="post" enctype="multipart/form-data">
+            <input type="submit" name="delete" value="confirm delete account"/>
+            <input type="hidden" name="operation" value="delete"/>
+        </form>
+</html>

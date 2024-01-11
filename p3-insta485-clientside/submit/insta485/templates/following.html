@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .post{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                border-style: solid;
+            }
+
+
+        </style>
+    </head>
+
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+                <a href="{{url_for('explore')}}"><b>Explore</b></a>|<a href="{{url_for('users', user_url_slug = logname)}}"><b>{{logname}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+
+        <h1>
+            Following
+        </h1>
+
+        <div class="flex-container">
+            {% for follower in following %}
+                <div class = "post">
+                    <div>
+                        <p>
+                            <img alt="post1pic" src="{{url_for('download_file', filename = follower.user_img_url)}}"
+                            width="30" height="30">
+                            <a href="{{url_for('users', user_url_slug = follower.username)}}">{{follower.username}}</a>
+                        </p>
+                    </div>
+
+                    <div>
+                        {%if logname is not eq(follower.username)%}
+                            {%if follower.logname_follows_username is true%}
+                                following
+                                <form action="{{url_for('following_redirect')}}?target={{url_for('following', user_url_slug = follower.page_name)}}" method="post" enctype="multipart/form-data">
+                                    <input type="submit" name="unfollow" value="unfollow"/>
+                                    <input type="hidden" name="username" value="{{follower.username}}"/>
+                                    <input type="hidden" name="operation" value="unfollow"/>
+                                </form>
+                            {% endif %}
+
+                            {%if follower.logname_follows_username is false%}
+                                not following
+                                <form action="{{url_for('following_redirect')}}?target={{url_for('following', user_url_slug = follower.page_name)}}" method="post" enctype="multipart/form-data">
+                                    <input type="submit" name="follow" value="follow"/>
+                                    <input type="hidden" name="username" value="{{follower.username}}"/>
+                                    <input type="hidden" name="operation" value="follow"/>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+            {% endfor %}
+        </div>
+        
+        </body>
+</html>

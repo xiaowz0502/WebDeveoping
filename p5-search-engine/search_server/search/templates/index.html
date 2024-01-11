@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Ask485</title>
+    </head>
+    <body>
+        <div class="ask485">
+            <p>ask485</p>
+        </div>
+
+        <div class="search_bar">
+            <!-- DO NOT CHANGE THIS (aside from where we say 'FIXME') -->
+            <form action="/" method="GET">
+                <div><input type="text" name="q" value="{{context.query}}"/></div>
+                <div><input type="range" name="w" value="{{context.weight}}" min="0" max="1" step="0.01"/></div>
+                <input type="submit" value="Search"/>
+            </form>
+        </div>
+
+        <div class="docs">
+            {% if context.query != "" %}
+                {% if context.results|length > 0 %}
+                    {% for result in context.results %}
+                        {% if result.url != '' %}
+                            <a class="doc_url" href="{{result.url}}">{{result.url}}</a>
+                        {% else %}
+                            <a class="doc_url" href="{{result.url}}">No url available</a>
+                        {% endif %}
+                        
+                        <div class="doc_title">{{result.title}}</div>
+
+                        {% if result.summary != "" %}
+                            <div class="doc_summary">{{result.summary}}</div>
+                        {% else %}
+                            <div class="doc_summary">No summary available</div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="no_results">No search results found!</div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485</title>
+        <style>
+            .flex-container{
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                
+            }
+            .post1{
+                border-style: solid;
+            }
+            .head1{
+                margin-left: 100px;
+            }
+
+            .flex-container > div {
+                width: 450px;
+                text-align: center;
+                line-height: 75px;
+                font-size: 30px;
+            }
+        </style>
+    </head>
+
+
+    <body>
+        <div style="display: flex; justify-content: space-between;">
+            <div >
+                <p>
+                    <a href="/">
+                        <img alt="Logo" src="/static/images/logo.png"
+                        width="250" height="48">
+                    </a>
+                </p>
+            </div>
+            <p style="font-size:160%;">
+                <a href="{{url_for('explore')}}"><b>Explore</b></a>|<a href="{{url_for('users', user_url_slug = logname)}}"><b>{{logname}}</b></a>
+            </p>
+        </div>
+        <hr>
+        <br>
+        <br>
+        <h1 class = "head1">{{username}}</h1>
+        
+        
+        {%if logname is not eq(username)%}
+            {%if logname_follows_username is true%}
+                following
+                <form action="{{url_for('following', user_url_slug = username)}}?target={{url_for('users', user_url_slug = username)}}" method="post" enctype="multipart/form-data">
+                    <input type="submit" name="unfollow" value="unfollow"/>
+                    <input type="hidden" name="username" value="{{username}}"/>
+                    <input type="hidden" name="operation" value="unfollow"/>
+                </form>
+            {% endif %}
+            {%if logname_follows_username is false%}
+                not following
+                <form action="{{url_for('following', user_url_slug = username)}}?target={{url_for('users', user_url_slug = username)}}" method="post" enctype="multipart/form-data">
+                    <input type="submit" name="follow" value="follow"/>
+                    <input type="hidden" name="username" value="{{username}}"/>
+                    <input type="hidden" name="operation" value="follow"/>
+                </form>
+            {% endif %}
+        {% else %}
+        <a href="{{url_for('edit')}}"><b>Edit profile</b></a>
+            <form action="{{url_for('logout')}}" method="post" enctype="multipart/form-data">
+                <input type="submit" name="logout" value="Logout"/>
+            </form>
+        {% endif %}
+        
+        <p class = "head1">
+            {%if total_posts is eq(1)%}
+                {{total_posts}}
+                post
+            {% else %}
+                {{total_posts}}
+                posts
+            {% endif %}
+            
+            {%if followers is eq(1)%}
+                <a href="{{url_for('follower', user_url_slug = username)}}"><b>{{followers}} follower</b></a>
+            {%else%}
+                <a href="{{url_for('follower', user_url_slug = username)}}"><b>{{followers}} followers</b></a>
+            {% endif %}
+
+            <a href="{{url_for('following', user_url_slug = username)}}"><b>{{following}} following</b></a>
+        </p>
+
+        <p class = "head1">
+            {{fullname}}
+        </p>
+
+        <br>
+        {%if logname is eq(username)%}
+            <form action="{{url_for('posts')}}?target={{url_for('users', user_url_slug = username)}}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required/>
+                <input type="submit" name="create_post" value="upload new post"/>
+                <input type="hidden" name="operation" value="create"/>
+            </form>
+        {% endif %}
+        <br>
+
+        <div class = "flex-container">
+            {% for post in posts %}
+                <div class = "flex-container">
+                    <a href="{{url_for('post_redirect', postid_url_slug = post.postid)}}">
+                        <img alt="post1pic" src="{{url_for('download_file', filename = post.img_url)}}"
+                        width="400" height="400">
+                    </a>
+                
+                </div>
+            {% endfor %}
+        </div>
+        </body>
+</html>
